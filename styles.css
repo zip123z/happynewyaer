@@ -24,7 +24,7 @@ body {
 }
 
 header h1 {
-  font-size: min(20vw, 96px);
+  font-size: min(20vw, 120px);
   font-family: 'Kaiti SC';
   margin: 0.5em 0;
 }
@@ -114,7 +114,7 @@ footer p {
 
 @media (max-width: 768px) {
   header h1 {
-    font-size: 1vw;
+    font-size: 15vw;
   }
   
   header h2 {
