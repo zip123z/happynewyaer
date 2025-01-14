@@ -1,30 +1,31 @@
-// 祝福語數據
+// 祝福语数据
 const quotes = {
   family: [
-    "祝家人新年快樂，身體健康，萬事如意！",
-    "願新的一年裡，家人平安喜樂，幸福美滿！",
-    "祝全家新年大吉，財源廣進，心想事成！"
+    "祝家人新年快乐，身体健康，万事如意！",
+    "愿新的一年里，家人平安喜乐，幸福美满！",
+    "祝全家新年吉祥，财源广进，心想事成！"
   ],
   friends: [
-    "祝好友新年快樂，友誼長存，事業有成！",
-    "願新的一年裡，我們的友誼更加深厚！",
-    "祝朋友新年快樂，天天開心，萬事順意！"
+    "祝好友新年快乐，友谊长存，事业蒸蒸日上！",
+    "愿新的一年里，我们的友谊更加深厚！",
+    "祝朋友新年大吉，万事顺心，笑口常开！"
   ],
   business: [
-    "祝貴公司新年大展宏圖，財源廣進！",
-    "願新的一年裡，我們合作愉快，共創輝煌！",
-    "祝您事業蒸蒸日上，新年更上一層樓！"
+    "祝您新年事业兴旺，财源广进，合作愉快！",
+    "愿新的一年里，我们合作更加顺利，共创辉煌！",
+    "祝贵公司新年大展宏图，生意兴隆！"
   ],
   humor: [
-    "新年快樂！願你錢包鼓鼓，體重輕輕！",
-    "祝你新年快樂，吃嘛嘛香，睡嘛嘛甜！",
-    "新年願望：工資漲得像頭髮一樣快，頭髮掉得像工資一樣慢！"
+    "新年快乐！愿你钱包鼓鼓，烦恼少少，快乐多多！",
+    "祝你新年吃嘛嘛香，睡嘛嘛甜，干啥啥顺！",
+    "新年愿望：躺着也能赚钱，睡着也能变美！"
   ]
 };
 
-// 獲取DOM元素
+// DOM元素
 const generateBtn = document.getElementById('generateBtn');
 const quoteDisplay = document.getElementById('quoteDisplay');
+const copyBtn = document.getElementById('copyBtn');
 
 // 播放音效
 function playSound() {
@@ -32,65 +33,82 @@ function playSound() {
   audio.play();
 }
 
-// 生成隨機祝福語
+// 生成随机祝福语
 function generateQuote() {
-  // 隨機選擇一個分類
-  const categories = Object.keys(quotes);
-  const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-  
-  // 隨機選擇一條祝福語
-  const randomQuote = quotes[randomCategory][Math.floor(Math.random() * quotes[randomCategory].length)];
-  
-  // 顯示祝福語
-  quoteDisplay.style.opacity = 0;
+  const categories = Object.values(quotes);
+  const allQuotes = [].concat(...categories);
+  const randomIndex = Math.floor(Math.random() * allQuotes.length);
+  return allQuotes[randomIndex];
+}
+
+// 显示祝福语
+function showQuote() {
+  // 按钮点击动画
+  generateBtn.classList.add('clicked');
   setTimeout(() => {
-    quoteDisplay.textContent = randomQuote;
-    quoteDisplay.style.opacity = 1;
+    generateBtn.classList.remove('clicked');
   }, 100);
-  
-  // 添加複製按鈕功能
-  const copyBtn = document.getElementById('copyBtn');
-  copyBtn.onclick = () => {
-    navigator.clipboard.writeText(randomQuote)
-      .then(() => {
-        showCopySuccess();
-      });
-  };
-}
 
-// 顯示複製成功提示
-function showCopySuccess() {
-  const successMsg = document.createElement('div');
-  successMsg.textContent = '複製成功！';
-  successMsg.style.position = 'absolute';
-  successMsg.style.top = '-30px';
-  successMsg.style.color = '#FFD700';
-  successMsg.style.opacity = 0;
-  quoteDisplay.appendChild(successMsg);
-  
-  // 淡入淡出動畫
-  setTimeout(() => {
-    successMsg.style.opacity = 1;
-    setTimeout(() => {
-      successMsg.style.opacity = 0;
-      setTimeout(() => {
-        quoteDisplay.removeChild(successMsg);
-      }, 500);
-    }, 1000);
-  }, 10);
-}
-
-// 按鈕點擊事件
-generateBtn.addEventListener('click', () => {
   // 播放音效
   playSound();
-  
-  // 按鈕動畫
-  generateBtn.style.transform = 'scale(0.95)';
+
+  // 生成并显示祝福语
+  const quote = generateQuote();
+  quoteDisplay.textContent = quote;
+  quoteDisplay.classList.add('show');
+
+  // 显示复制按钮
+  copyBtn.style.display = 'block';
+}
+
+// 复制祝福语
+function copyQuote() {
+  navigator.clipboard.writeText(quoteDisplay.textContent)
+    .then(() => {
+      showToast('复制成功！');
+    })
+    .catch(() => {
+      showToast('复制失败，请手动复制');
+    });
+}
+
+// 显示提示信息
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
   setTimeout(() => {
-    generateBtn.style.transform = 'scale(1)';
-  }, 100);
+    toast.classList.add('show');
+  }, 10);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      document.body.removeChild(toast);
+    }, 500);
+  }, 2000);
+}
+
+// 计算春节倒计时
+function updateCountdown() {
+  const now = new Date();
+  const nextSpringFestival = new Date(now.getFullYear(), 1, 10); // 假设春节在2月10日
+  if (now > nextSpringFestival) {
+    nextSpringFestival.setFullYear(nextSpringFestival.getFullYear() + 1);
+  }
   
-  // 生成祝福語
-  generateQuote();
-});
+  const diffTime = nextSpringFestival - now;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  document.getElementById('countdown').textContent = diffDays;
+}
+
+// 事件监听
+generateBtn.addEventListener('click', showQuote);
+copyBtn.addEventListener('click', copyQuote);
+
+// 初始化
+updateCountdown();
+setInterval(updateCountdown, 1000 * 60 * 60); // 每小时更新一次倒计时
